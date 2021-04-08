@@ -1,0 +1,1 @@
+sudo ~/Documents/cloudsql/cloud_sql_proxy -instances=hahago-cms:asia-east1:hahago-cms-test=tcp:3306 -credential_file=/Users/mac05gimmatek/Documents/cloudsql/hahago-cms-sql.json
