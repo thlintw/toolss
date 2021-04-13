@@ -22,11 +22,15 @@ void printNow() {
 }
 
 void parseDate(String dateString) {
-  DateTime dt = DateTime.parse(dateString);
+  try {
+    DateTime dt = DateTime.parse(dateString);
+    print('* dateString: $dateString');
+    print(datetimeToString(dt));
+    print(dt.toUtc().millisecondsSinceEpoch);
+  } catch (e) {
+    printPrompt('dateString error');
+  }
 
-  print('* dateString: $dateString');
-  print(datetimeToString(dt));
-  print(dt.toUtc().millisecondsSinceEpoch);
 }
 
 void dateOutput(List<String> dates) {

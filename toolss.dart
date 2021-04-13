@@ -6,23 +6,30 @@ import 'package:args/args.dart';
 
 import 'dart_toolss/date.dart';
 import 'dart_toolss/funcs.dart';
+import 'dart_toolss/proc_arb.dart';
 
-// const lineNumber = 'line-number';
-
-ArgResults argResults;
 
 void main(List<String> arguments) {
   exitCode = 0; // presume success
-  final parser = ArgParser()..addFlag('date', abbr: 'd');
+  final parser = ArgParser()
+    ..addFlag('date', abbr: 'd')
+    ..addFlag('proc_arb')
+    ..addFlag('generate')
+    ..addFlag('convert')
+    ..addFlag('template');
 
-  argResults = parser.parse(arguments);
+  ArgResults argResults = parser.parse(arguments);
 
   print('\n * TOOLSS OUTPUT * \n');
 
-  if (argResults['date']) {
-    final dates = argResults.rest;
-    dateOutput(dates);
-    exitCode = 1;
+  final rest = argResults.rest;
+
+  if (argResults['date']) {  
+    dateOutput(rest);
+
+  } else if (argResults['proc_arb']) {
+    arbMain(argResults, rest);
+
   } else {
     printPrompt('no command input.');
   }

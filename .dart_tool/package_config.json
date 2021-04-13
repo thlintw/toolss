@@ -3,19 +3,19 @@
   "packages": [
     {
       "name": "args",
-      "rootUri": "file:///Users/mac05gimmatek/.pub-cache/hosted/pub.dartlang.org/args-2.0.0",
+      "rootUri": "file:///Users/mac05gimmatek/Documents/dev/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/args-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
-      "rootUri": "file:///Users/mac05gimmatek/.pub-cache/hosted/pub.dartlang.org/path-1.8.0",
+      "rootUri": "file:///Users/mac05gimmatek/Documents/dev/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "pedantic",
-      "rootUri": "file:///Users/mac05gimmatek/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0",
+      "rootUri": "file:///Users/mac05gimmatek/Documents/dev/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -23,10 +23,10 @@
       "name": "toolss",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.10"
+      "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-04-13T05:36:31.903900Z",
+  "generated": "2021-04-13T10:09:10.728653Z",
   "generator": "pub",
   "generatorVersion": "2.13.0-116.0.dev"
 }
