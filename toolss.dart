@@ -9,7 +9,7 @@ import 'dart_toolss/funcs.dart';
 import 'dart_toolss/proc_arb.dart';
 
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   exitCode = 0; // presume success
   final parser = ArgParser()
     ..addFlag('date', abbr: 'd')
@@ -28,7 +28,7 @@ void main(List<String> arguments) {
     dateOutput(rest);
 
   } else if (argResults['proc_arb']) {
-    arbMain(argResults, rest);
+    await arbMain(argResults, rest);
 
   } else {
     printPrompt('no command input.');

@@ -1,4 +1,5 @@
 {
     "workbench.colorTheme": "GitHub Dark",
-    "dart.enableSdkFormatter": false
+    "dart.enableSdkFormatter": false,
+    "dart.sdkPath": "D:\\Documents\\Works\\projects\\flutter\\bin\\cache\\dart-sdk"
 }

@@ -4,25 +4,34 @@ import 'package:args/args.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
+import 'dart:collection';
 
 import 'funcs.dart';
 
 const String tab = '    ';
 
-void arbMain(ArgResults argResults, List<String> rest) {
+Future<void> arbMain(ArgResults argResults, List<String> rest) async {
   String? inputPath, locale, outputPath;
   inputPath = rest.length >= 1 ? rest[0] : null;
   locale = rest.length >= 2 ? rest[1] : null;
   outputPath = rest.length >= 3 ? rest[2] : null;
+
   if (argResults['generate']) {
-    generateEmptyArb(argResults, inputPath: inputPath, locale: locale, outputPath: outputPath);
+    await generateEmptyArb(argResults, inputPath: inputPath, locale: locale, outputPath: outputPath);
+    
   } else {
     printPrompt('no option specified');
     printPrompt('allowed options for proc_arb: generate, convert');
   }
 }
 
-void generateEmptyArb(ArgResults argResults, {String? inputPath, String? locale, String? outputPath}) async {
+Future<void> generateEmptyArb(
+  ArgResults argResults, 
+  {
+    String? inputPath,
+    String? locale,
+    String? outputPath
+  }) async {
 
   if (inputPath == null) {
     printPrompt('no input path');
@@ -31,7 +40,6 @@ void generateEmptyArb(ArgResults argResults, {String? inputPath, String? locale,
     printPrompt('no locale');
 
   } else {
-
     printPrompt('processing input file ...');
 
     final outputPathFinal = outputPath ?? '${Directory.current.path}/intl_$locale.arb';
@@ -46,9 +54,9 @@ void generateEmptyArb(ArgResults argResults, {String? inputPath, String? locale,
       await output.create(recursive: true);
     }
 
-    Map arbJson = {};
+    LinkedHashMap outputMap = LinkedHashMap();
 
-    // var sink = output.openWrite();
+    outputMap['@@locale'] = locale;
 
     Stream<String> lines = input.openRead()
       .transform(utf8.decoder)       // Decode bytes to UTF-8.
@@ -56,18 +64,27 @@ void generateEmptyArb(ArgResults argResults, {String? inputPath, String? locale,
 
     try {
       await for (var line in lines) {
-        // print('$line: ${line.length} characters');
         String className = '${line[0].toLowerCase()}${line.substring(1)}';
-        arbJson[className] = className;
+        outputMap[className] = className;
         if (argResults['template']) {
-          arbJson['@$className'] = {
+          outputMap['@$className'] = {
             'description': className,
           };
         }
       }
-      print('File is now closed.');
     } catch (e) {
-      print('Error: $e');
+      printPrompt('Error: $e');
+    }
+
+    try {
+      JsonEncoder encoder = JsonEncoder.withIndent(tab);
+      var sink = output.openWrite();
+      sink.write(encoder.convert(outputMap));
+      await sink.close();
+      printPrompt('File is now closed.');
+
+    } catch(e) {
+      printPrompt('Error: $e');
     }
 
   }

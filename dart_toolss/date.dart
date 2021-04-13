@@ -16,7 +16,7 @@ String datetimeToString(DateTime dt) {
 void printNow() {
   DateTime now = DateTime.now();
 
-  print('* datetime now');
+  printPrompt('* datetime now');
   print(datetimeToString(now));
   print(now.toUtc().millisecondsSinceEpoch);
 }
@@ -24,7 +24,7 @@ void printNow() {
 void parseDate(String dateString) {
   try {
     DateTime dt = DateTime.parse(dateString);
-    print('* dateString: $dateString');
+    printPrompt('* dateString: $dateString');
     print(datetimeToString(dt));
     print(dt.toUtc().millisecondsSinceEpoch);
   } catch (e) {
