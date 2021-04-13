@@ -12,13 +12,13 @@ const String tab = '    ';
 
 Future<void> arbMain(ArgResults argResults, List<String> rest) async {
   String? inputPath, locale, outputPath;
-  inputPath = rest.length >= 1 ? rest[0] : null;
+  inputPath = rest.isNotEmpty ? rest[0] : null;
   locale = rest.length >= 2 ? rest[1] : null;
   outputPath = rest.length >= 3 ? rest[2] : null;
 
   if (argResults['generate']) {
     await generateEmptyArb(argResults, inputPath: inputPath, locale: locale, outputPath: outputPath);
-    
+
   } else {
     printPrompt('no option specified');
     printPrompt('allowed options for proc_arb: generate, convert');
