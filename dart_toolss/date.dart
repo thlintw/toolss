@@ -1,5 +1,9 @@
 #!/usr/bin/env dart
 
+import 'dart:io';
+
+import 'package:args/args.dart';
+
 import 'funcs.dart';
 
 String datetimeToString(DateTime dt) {
@@ -28,16 +32,39 @@ void parseDate(String dateString) {
     print(datetimeToString(dt));
     print(dt.toUtc().millisecondsSinceEpoch);
   } catch (e) {
-    printPrompt('dateString error');
+    errorExit('date format error');
   }
-
 }
 
-void dateOutput(List<String> dates) {
-  printNow();
-  if (dates.isNotEmpty) {
-    dates.forEach((d) {
-      parseDate(d);
+void compareTimestamp(String timestamp) {
+  try {
+    int st = int.parse(timestamp);
+    DateTime dt = DateTime.fromMillisecondsSinceEpoch(st);
+    int nowStamp = DateTime.now().millisecondsSinceEpoch;    
+    printPrompt('* timestamp: $timestamp');
+    printPrompt('* timestamp in datetime: ${dt.toString()}');
+    if (st > nowStamp) {
+      printPrompt('$timestamp is greater than now $nowStamp');
+    } else {
+      printPrompt('$timestamp is smaller than now $nowStamp');
+    }
+  } catch (_) {
+    errorExit('timestamp format error');
+  }
+}
+
+void dateMain(ArgResults argResults, List<String>? dates) {
+  if (argResults['compare'] && dates != null) {
+    dates.forEach((s) {
+      compareTimestamp(s);
     });
+
+  } else if (dates != null && dates.isNotEmpty){
+    printNow();
+    dates.forEach((st) {
+      parseDate(st);
+    });
+  } else {
+    printNow();
   }
 }

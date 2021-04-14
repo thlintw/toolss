@@ -1,5 +1,6 @@
 
 import 'package:args/args.dart';
+import 'package:excel/excel.dart';
 
 import 'dart:io';
 import 'dart:convert';
@@ -10,18 +11,36 @@ import 'funcs.dart';
 
 const String tab = '    ';
 
-Future<void> arbMain(ArgResults argResults, List<String> rest) async {
+Future<void> arbMain(ArgResults argResults, List<String>? rest) async {
   String? inputPath, locale, outputPath;
-  inputPath = rest.isNotEmpty ? rest[0] : null;
-  locale = rest.length >= 2 ? rest[1] : null;
-  outputPath = rest.length >= 3 ? rest[2] : null;
+  if (rest != null) {
+    inputPath = rest.isNotEmpty ? rest[0] : null;
+    locale = rest.length >= 2 ? rest[1] : null;
+    outputPath = rest.length >= 3 ? rest[2] : null;
+  }
 
   if (argResults['generate']) {
     await generateEmptyArb(argResults, inputPath: inputPath, locale: locale, outputPath: outputPath);
 
+  } else if (argResults['convert']){
+    await convertFromExcel(argResults, inputPath: inputPath, locale: locale, outputPath: outputPath);
+
   } else {
     printPrompt('no option specified');
     printPrompt('allowed options for proc_arb: generate, convert');
+  }
+}
+
+Future<void> writeFile(File output, LinkedHashMap outputMap) async {
+  try {
+    JsonEncoder encoder = JsonEncoder.withIndent(tab);
+    var sink = output.openWrite();
+    sink.write(encoder.convert(outputMap));
+    await sink.close();
+    printPrompt('file closed.');
+
+  } catch(e) {
+    errorExit('error writing arb file.');
   }
 }
 
@@ -34,10 +53,10 @@ Future<void> generateEmptyArb(
   }) async {
 
   if (inputPath == null) {
-    printPrompt('no input path');
+    errorExit('no input path');
     
   } else if (locale == null) {
-    printPrompt('no locale');
+    errorExit('no locale');
 
   } else {
     printPrompt('processing input file ...');
@@ -46,6 +65,11 @@ Future<void> generateEmptyArb(
     printPrompt('output path: $outputPathFinal');
 
     final input = File(inputPath);
+
+    if (!input.existsSync()) {
+      errorExit('input file does not exist');
+    }
+
     File output = File(outputPathFinal);
 
     if (output.existsSync()) {
@@ -72,20 +96,83 @@ Future<void> generateEmptyArb(
           };
         }
       }
-    } catch (e) {
-      printPrompt('Error: $e');
+    } catch (e) {      
+      errorExit('error reading input file');
     }
 
-    try {
-      JsonEncoder encoder = JsonEncoder.withIndent(tab);
-      var sink = output.openWrite();
-      sink.write(encoder.convert(outputMap));
-      await sink.close();
-      printPrompt('File is now closed.');
+    await writeFile(output, outputMap);
+  }
+}
 
-    } catch(e) {
-      printPrompt('Error: $e');
+
+Future<void> convertFromExcel(
+  ArgResults argResults, 
+  {
+    String? inputPath,
+    String? locale,
+    String? outputPath
+  }) async {
+
+  if (inputPath == null) {
+    errorExit('no input path');
+    
+  } else if (locale == null) {
+    errorExit('no locale');
+
+  } else {
+
+    printPrompt('processing excel file ...');
+
+    final outputPathFinal = outputPath ?? '${Directory.current.path}/intl_$locale.arb';
+    printPrompt('output path: $outputPathFinal');
+
+    final input = File(inputPath);
+    File output = File(outputPathFinal);
+
+    if (!input.existsSync()) {
+      errorExit('input file does not exist');
     }
 
+    if (output.existsSync()) {
+      await output.writeAsString('');
+    } else {
+      await output.create(recursive: true);
+    }
+
+    var bytes = input.readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
+
+    var sheet = excel['main'];
+
+    if (sheet.maxCols < 1) {
+      errorExit('template error: "main" sheet does not exist');
+    }
+
+    if (sheet.maxCols > 2) {
+      errorExit('template error: too many cols in "main" sheet');
+    }
+
+    LinkedHashMap outputMap = LinkedHashMap();
+
+    outputMap['@@locale'] = locale;
+
+    int rc = 1;
+
+    for (var row in sheet.rows) {
+      if (rc > 1) {
+        String varName = row[0]?.value;
+        String className = '${varName[0].toLowerCase()}${varName.substring(1)}';        
+        String translation = row[1]?.value;
+        outputMap[className] = translation;
+        if (argResults['template']) {
+          outputMap['@$className'] = {
+            'description': className,
+          };
+        }
+      }
+      rc += 1;
+    }
+
+    await writeFile(output, outputMap);
   }
 }

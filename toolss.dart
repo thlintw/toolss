@@ -10,29 +10,48 @@ import 'dart_toolss/proc_arb.dart';
 
 
 void main(List<String> arguments) async {
-  exitCode = 0; // presume success
-  final parser = ArgParser()
-    ..addFlag('date', abbr: 'd')
-    ..addFlag('proc_arb')
-    ..addFlag('generate')
-    ..addFlag('convert')
-    ..addFlag('template');
+  exitCode = 0;
 
-  ArgResults argResults = parser.parse(arguments);
+  final parser = ArgParser()
+    ..addCommand('help')
+    ..addCommand('date')
+    ..addFlag('compare', abbr: 'c')
+    ..addCommand('arb')
+    ..addFlag('generate', abbr: 'g')
+    ..addFlag('convert')
+    ..addFlag('template', abbr: 't');
+
+  ArgResults? argResults;
 
   print('\n * TOOLSS OUTPUT * \n');
 
-  final rest = argResults.rest;
-
-  if (argResults['date']) {  
-    dateOutput(rest);
-
-  } else if (argResults['proc_arb']) {
-    await arbMain(argResults, rest);
-
-  } else {
-    printPrompt('no command input.');
+  try {
+    argResults = parser.parse(arguments);
+  } catch (e) {    
+    errorExit('flag or option error');
   }
 
-  print('\n * TOOLSS END * \n');
+  try {
+    argResults!;
+    final rest = argResults.command?.rest;
+
+    switch (argResults.command?.name) {
+      case 'date':
+        dateMain(argResults, rest);
+        break;
+      case 'arb':
+        await arbMain(argResults, rest);
+        break;
+      case 'help':
+        help();
+        break;
+      default:
+        printPrompt('no command input or not valid command.');
+        break;
+    }
+  } catch (e) {
+    errorExit('toolss error');
+  }
+
+  successExit();
 }
