@@ -36,17 +36,17 @@ void parseDate(String dateString) {
   }
 }
 
-void compareTimestamp(String timestamp) {
+void compareTimestamp(DateTime now, String timestamp) {
   try {
     int st = int.parse(timestamp);
     DateTime dt = DateTime.fromMillisecondsSinceEpoch(st);
-    int nowStamp = DateTime.now().millisecondsSinceEpoch;    
+    int nowStamp = now.millisecondsSinceEpoch;    
     printPrompt('* timestamp: $timestamp');
     printPrompt('* timestamp in datetime: ${dt.toString()}');
     if (st > nowStamp) {
-      printPrompt('$timestamp is greater than now $nowStamp');
+      printPrompt('$timestamp is greater than now: $nowStamp');
     } else {
-      printPrompt('$timestamp is smaller than now $nowStamp');
+      printPrompt('$timestamp is smaller than now: $nowStamp');
     }
   } catch (_) {
     errorExit('timestamp format error');
@@ -54,9 +54,10 @@ void compareTimestamp(String timestamp) {
 }
 
 void dateMain(ArgResults argResults, List<String>? dates) {
-  if (argResults['compare'] && dates != null) {
+  if (argResults['compare'] && dates != null) {    
+    var now = DateTime.now();
     dates.forEach((s) {
-      compareTimestamp(s);
+      compareTimestamp(now, s);
     });
 
   } else if (dates != null && dates.isNotEmpty){
@@ -64,6 +65,7 @@ void dateMain(ArgResults argResults, List<String>? dates) {
     dates.forEach((st) {
       parseDate(st);
     });
+
   } else {
     printNow();
   }

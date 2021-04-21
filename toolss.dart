@@ -16,10 +16,13 @@ void main(List<String> arguments) async {
     ..addCommand('help')
     ..addCommand('date')
     ..addFlag('compare', abbr: 'c')
+    ..addOption('timezone', abbr: 'z')
     ..addCommand('arb')
+    ..addFlag('fill_source')
     ..addFlag('generate', abbr: 'g')
     ..addFlag('convert')
-    ..addFlag('template', abbr: 't');
+    ..addFlag('template', abbr: 't')
+    ..addFlag('name_only');
 
   ArgResults? argResults;
 
