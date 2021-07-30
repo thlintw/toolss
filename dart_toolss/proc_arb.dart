@@ -137,9 +137,14 @@ LinkedHashMap loadFromExcel(File input, String locale, ArgResults argResults, {L
   for (var row in sheet.rows) {
     if (rc > 1) {
       if (row.length > 1) {
-        String varName = row[0]?.value;
-        String className = '${varName[0].toLowerCase()}${varName.substring(1)}';  
-        String translation = row[1]?.value;
+        String varName = '', className = '', translation = '';
+        try{
+          varName = row[0]?.value;
+          className = '${varName[0].toLowerCase()}${varName.substring(1)}';  
+          translation = row[1]?.value;
+        } catch(_) {
+          errorExit('worksheet error: empty cell in range');
+        }
         if (argResults['name_only']) {
           outputMap[className] = className;          
         } else {

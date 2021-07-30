@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unplug Item</title>
+
+    
+  </head>
+  <body>
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <table id="tbe">
+                <tr>
+                    <th>
+                        id
+                    </th>
+                    <th>
+                        img
+                    </th>
+                </tr>       
+            </table>
+        </div>
+        <script>
+            let tbe = document.getElementById('tbe');
+            ['plant', 'vase', 'scene'].forEach((el) => {
+            for (let i = 1; i < 25; i ++) {
+                let tr = document.createElement('tr');
+                let td = document.createElement('td');
+                td.innerHTML = `${el}_${i}`;
+                let tdd = document.createElement('td');
+                let img = document.createElement('img');
+                img.src = `https://img68.bstw.cc/unplug_gallery/v_1619681833000/${el}_${i}-thumb.png`;
+                img.setAttribute('style', 'width: 150px; height: 150px;');
+                tdd.appendChild(img);
+                tr.appendChild(td);
+                tr.appendChild(tdd);
+                tbe.appendChild(tr);
+                td.setAttribute('style', 'border-bottom: 1px solid black');
+                tdd.setAttribute('style', 'border-bottom: 1px solid black');
+            }
+            });
+    </script>
+  </body>
+</html>

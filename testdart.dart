@@ -37,15 +37,19 @@ void main() {
   // print(minList);
   //
   
-  double aspect = 375 / 667;
+  // double aspect = 375 / 667;
 
-  double convertFov(double hFov) {
-    return (atan(tan(((hFov / 2) * pi) / 180) / aspect) * 2 * 180) / pi;
+  // double convertFov(double hFov) {
+  //   return (atan(tan(((hFov / 2) * pi) / 180) / aspect) * 2 * 180) / pi;
+  // }
+
+  // int reverseFov(double vFov) {
+  //   return (atan(tan(vFov * pi / 180 / 2) * aspect) * 180 / pi * 2).round();
+  // }
+
+  // print(reverseFov(convertFov(80)));
+  // 
+  for (int i = 0; i < 100; i++) {
+    print(1 + Random().nextInt(3));
   }
-
-  int reverseFov(double vFov) {
-    return (atan(tan(vFov * pi / 180 / 2) * aspect) * 180 / pi * 2).round();
-  }
-
-  print(reverseFov(convertFov(80)));
 }

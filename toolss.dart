@@ -7,7 +7,7 @@ import 'package:args/args.dart';
 import 'dart_toolss/date.dart';
 import 'dart_toolss/funcs.dart';
 import 'dart_toolss/proc_arb.dart';
-
+import 'dart_toolss/crypto.dart';
 
 void main(List<String> arguments) async {
   exitCode = 0;
@@ -22,7 +22,9 @@ void main(List<String> arguments) async {
     ..addFlag('generate', abbr: 'g')
     ..addFlag('convert')
     ..addFlag('template', abbr: 't')
-    ..addFlag('name_only');
+    ..addFlag('name_only')
+    ..addCommand('crypto')
+    ..addFlag('ada');
 
   ArgResults? argResults;
 
@@ -48,11 +50,15 @@ void main(List<String> arguments) async {
       case 'help':
         help();
         break;
+      case 'crypto':
+        await cryptoMain(argResults, rest);
+        break;
       default:
         printPrompt('no command input or not valid command.');
         break;
     }
   } catch (e) {
+    print(e);
     errorExit('toolss error');
   }
 

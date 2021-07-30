@@ -10,6 +10,8 @@ dependencies:
   path: ^1.7.0
   args: ^2.0.0
   excel: ^2.0.0-null-safety
+  http: ^0.13.3
+
 
 
   # firebase_auth: ^1.0.0
